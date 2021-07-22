@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  postgres:
+    container_name: 'test-postgres'
+    image: 'postgres:latest'
+    restart: always
+    ports:
+      - '15432:5432'
+    networks:
+      - app-tier
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data/'
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  pgadmin4:
+    image: 'dpage/pgadmin4'
+    restart: always
+    ports:
+      - '5050:80'
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'test@test.com'
+      PGADMIN_DEFAULT_PASSWORD: 'test'
+    networks:
+      - app-tier
+
+  next:
+    container_name: 'test-next'
+    restart: unless-stopped
+    image: node:16
+    command: npm run dev
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/srv/next:rw
+    working_dir: /srv/next
+    env_file:
+      - .env
+    environment:
+      # Overriding the database connection string with container db
+      - DATABASE_URL=postgresql://postgres:postgres@test-postgres/postgres
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata: {}
+
+networks:
+  app-tier:
+    driver: bridge

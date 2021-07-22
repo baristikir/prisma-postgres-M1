@@ -2,33 +2,53 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
+npm install
+```
+
+Run, Docker Container with PostgreSQL Database, PgAdmin and Next.js Development Server:
+
+```bash
+docker-compose up
+```
+
+Run, prisma migration:
+
+```bash
+npx prisma migrate dev
+```
+
+Run, prisma client generation
+
+```bash
+npx prisma generate
+```
+
+Run, prisma database seed with dummy user data (from `/prisma/seed.ts`):
+
+```bash
+npx prisma db seed --preview-feature
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000/users](http://localhost:3000/users) with your browser to see data from the database or the error for this case.
+Open [http://localhost:3000/api/graphql](http://localhost:3000/api/graphql) with your browser to see GraphiQL Playground and the example query
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:5050](http://localhost:5050) for PgAdmin and login with test data from `docker-compose.yml`
+Email: `test@test.com`
+Password: `test`
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.tsx`.
+You can inspect the postgreSQL Database from pgAdmin by connecting it.
+Steps to inspect on PgAdmin:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Login on [http://localhost:5050](http://localhost:5050) with test data above
+2. Right click on `Server` inside the PgAdmin Dashboard
+3. Under `General` tab type a name
+4. Under `Connection` tab type followings:
+   - Host name / address: `test-postgres`
+   - Port: `5432`
+   - Maintenance database: `postgres`
+   - Username: `postgres`
+   - Password: `postgres`

@@ -1,0 +1,10 @@
+scalar DateTime
+
+type Query {
+  getUsers: [User!]!
+}
+
+type User {
+  id: ID!
+  name: ID!
+}
